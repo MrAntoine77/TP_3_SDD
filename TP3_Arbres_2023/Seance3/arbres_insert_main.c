@@ -77,6 +77,15 @@ TEST(rechercherPrecFilsTries) {
 
 // autres tests a ajouter
 
+	pprec = rechercherPrecFilsTries(pere, 'S');
+	REQUIRE( NULL != *pprec );
+	CHECK( 'M' == (*pprec)->val );
+	printf("VAL : %c\n",(*pprec)->val);
+
+
+	pprec = rechercherPrecFilsTries(pere, 'Z');
+	REQUIRE( NULL != *pprec );
+	CHECK( 'T' == (*pprec)->val );
 	libererArbre(&racine);
 }
 

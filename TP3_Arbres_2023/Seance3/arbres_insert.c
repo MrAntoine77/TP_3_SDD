@@ -48,10 +48,13 @@ cell_lvlh_t * rechercher_v(cell_lvlh_t * racine, char v)
  */
 cell_lvlh_t ** rechercherPrecFilsTries(cell_lvlh_t * adrPere, char w)
 {
-    cell_lvlh_t ** pprec = &adrPere->lv;
+    cell_lvlh_t ** pprec = (cell_lvlh_t**)malloc(sizeof(cell_lvlh_t*));
+    *pprec = adrPere->lv;
+    printf("Valeur : %c\n",(*pprec)->val);
     while((*pprec)->lh!=NULL && (*pprec)->lh->val<w){
         *pprec=(*pprec)->lh;
     }
+
     return pprec;
 }
 
@@ -65,14 +68,13 @@ cell_lvlh_t ** rechercherPrecFilsTries(cell_lvlh_t * adrPere, char w)
 int insererTrie(cell_lvlh_t * racine, char v, char w)
 {
     printPostfixee(stdout,racine);
-    printf("v : %c, w : %c\n",v,w);
     int retour = 0;
     cell_lvlh_t * pere = rechercher_v(racine, v);
     cell_lvlh_t ** pprec;
 
     if (pere != NULL) {
         pprec = rechercherPrecFilsTries(pere, w);
-        printf("TEST : %c\n",(*pprec)->val);
+        
 
         cell_lvlh_t * nouv = (cell_lvlh_t*)malloc(sizeof(cell_lvlh_t));
         if (nouv != NULL) {
