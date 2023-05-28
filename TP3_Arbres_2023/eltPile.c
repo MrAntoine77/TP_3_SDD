@@ -13,8 +13,8 @@
  */
 void copyElt(eltPile * src, eltPile * dest)
 {
-    dest->adrCell=src->adrCell;
-    dest->adrPrec=src->adrPrec;
-    dest->nbFils_ou_Freres=src->nbFils_ou_Freres;
+    dest->adrCell=src->adrCell; //Copie la valeur de l'adresse de cellule de src vers dest
+    dest->adrPrec=src->adrPrec; //Copie la valeur de l'adresse précédente de src vers dest
+    dest->nbFils_ou_Freres=src->nbFils_ou_Freres; //Copie la valeur du nombre de fils ou frères de src vers dest
 }
 

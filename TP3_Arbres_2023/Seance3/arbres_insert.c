@@ -26,17 +26,22 @@ cell_lvlh_t * rechercher_v(cell_lvlh_t * racine, char v)
     pile_t * pile = initPile(20);
     eltPile elem;
     int code;
-    while(cour != NULL && cour->val != v){
-        elem.adrCell=cour;
-        empiler(pile, &elem, &code);
-        cour=cour->lv;
+
+    while(cour != NULL && cour->val != v){ //Continue la boucle tant que cour n'est pas NULL et la valeur de cour est différente de v
+
+        elem.adrCell=cour; //Affecte la valeur de cour au champ adrCell de la structure elem
+        empiler(pile, &elem, &code); //On empile ces informations
+        cour=cour->lv; //On passe au fils
+
         while(cour == NULL && !estVidePile(pile)){
-            depiler(pile, &elem,&code);
-            cour=elem.adrCell;
-            cour=cour->lh;
+
+            depiler(pile, &elem,&code); //On depile une information
+            cour=elem.adrCell; //Met à jour cour avec la valeur de adrCell de la structure défilée
+            cour=cour->lh; //On passe au frère
         }
     }
-    libererPile(&pile);
+
+    libererPile(&pile);  //Libère la mémoire allouée pour la pile
     return cour;
 }
 
@@ -48,14 +53,17 @@ cell_lvlh_t * rechercher_v(cell_lvlh_t * racine, char v)
  */
 cell_lvlh_t ** rechercherPrecFilsTries(cell_lvlh_t * adrPere, char w)
 {
-    cell_lvlh_t ** pprec = (cell_lvlh_t**)malloc(sizeof(cell_lvlh_t*));
-    *pprec = adrPere->lv;
+    cell_lvlh_t ** pprec = (cell_lvlh_t**)malloc(sizeof(cell_lvlh_t*)); //Alloue de la mémoire pour un pointeur de pointeur pprec
+
+    *pprec = adrPere->lv; // Affecte le pointeur lv du père à la valeur du pointeur de pointeur
     printf("Valeur : %c\n",(*pprec)->val);
-    while((*pprec)->lh!=NULL && (*pprec)->lh->val<w){
-        *pprec=(*pprec)->lh;
+
+    while((*pprec)->lh != NULL && (*pprec)->lh->val < w){ //Continue la boucle tant que la cellule suivante frère n'est pas NULL et la valeur de cette cellule est inférieure à w
+
+        *pprec=(*pprec)->lh; //On passe au frère suivant
     }
 
-    return pprec;
+    return pprec; //Retourne le pointeur de pointeur vers la cellule précédente du fils trié
 }
 
 /** TO DO
@@ -68,23 +76,27 @@ cell_lvlh_t ** rechercherPrecFilsTries(cell_lvlh_t * adrPere, char w)
 int insererTrie(cell_lvlh_t * racine, char v, char w)
 {
     printPostfixee(stdout,racine);
+
     int retour = 0;
-    cell_lvlh_t * pere = rechercher_v(racine, v);
+    cell_lvlh_t * pere = rechercher_v(racine, v); // Recherche le pointeur vers le père correspondant à la valeur v en utilisant la fonction rechercher_v
     cell_lvlh_t ** pprec;
+    cell_lvlh_t * nouv;
 
-    if (pere != NULL) {
-        pprec = rechercherPrecFilsTries(pere, w);
-        
+    if (pere != NULL) { // Vérifie si le père a été trouvé
 
-        cell_lvlh_t * nouv = (cell_lvlh_t*)malloc(sizeof(cell_lvlh_t));
-        if (nouv != NULL) {
-            nouv->val = w;
+        pprec = rechercherPrecFilsTries(pere, w); // Recherche la position d'insertion triée pour la nouvelle cellule en utilisant la fonction rechercherPrecFilsTries
+        nouv = (cell_lvlh_t*)malloc(sizeof(cell_lvlh_t)); // Alloue de la mémoire pour une nouvelle cellule
+
+        if (nouv != NULL) { // Vérifie si l'allocation de mémoire a réussi
+
+            nouv->val = w;  // Affecte la valeur w à la nouvelle cellule
             nouv->lv = NULL;
-            nouv->lh = (*pprec)->lh;
-            (*pprec)->lh = nouv;
+            nouv->lh = (*pprec)->lh; // Initialise le champ lh de la nouvelle cellule avec la cellule suivante frère de la position d'insertion
+            (*pprec)->lh = nouv; //Met à jour le champ lh de la cellule précédente pour pointer vers la nouvelle cellule
             retour = 1;
         }
     }
+
     printPostfixee(stdout,racine);
     return retour;
 }

@@ -18,14 +18,14 @@ pile_t * initPile(int taille)
    
     if(taille){
          
-        retour = (pile_t *)malloc(sizeof(pile_t));
+        retour = (pile_t *)malloc(sizeof(pile_t)); //alloue la mémoire pour la structure
         
         if(retour){
             
             retour->base = (eltPile *)malloc(taille*sizeof(eltPile));
             if(retour->base){
-                retour->taille=taille;
-                retour->sommet=-1;
+                retour->taille=taille; //initialise la taille de la pilee
+                retour->sommet=-1; //initialise le sommet à -1 : pile vide
             } else {
                 retour = NULL;
             }
@@ -57,7 +57,7 @@ void libererPile(pile_t ** adrPtPile)
  */
 int estVidePile(pile_t * ptPile)
 {
-    return (ptPile->sommet==-1);
+    return (ptPile->sommet==-1); //verifie si le sommet est defini ou pas
 }
 
 
@@ -73,9 +73,9 @@ void empiler(pile_t * ptPile, eltPile * ptVal, int * code)
 {
     *code = 1;
     
-    if(ptPile->sommet<ptPile->taille-1){
-        ptPile->sommet+=1;
-        ptPile->base[ptPile->sommet]=*ptVal;
+    if(ptPile->sommet<ptPile->taille-1){ //verifie si de l'espace est disponible
+        ptPile->sommet+=1; //incremente la valeur du sommet pour indiquer a position de la valeur empilee
+        ptPile->base[ptPile->sommet]=*ptVal; //place la valeur pointée par ptVal dans le tableau d'éléments de la pile à la position du sommet
         *code=0;
     }
 }
@@ -92,9 +92,9 @@ void empiler(pile_t * ptPile, eltPile * ptVal, int * code)
 void depiler(pile_t * ptPile, eltPile * ptRes, int * code)
 {
     *code = 1;
-    if(!estVidePile(ptPile)){
-        *ptRes=ptPile->base[ptPile->sommet];
-        ptPile->sommet-=1;
+    if(!estVidePile(ptPile)){ //si la pile n'est pas vide
+        *ptRes=ptPile->base[ptPile->sommet]; //place la valeur en haut de la pile dans l'adresse pointée par ptRes
+        ptPile->sommet-=1; //decremente la valeur du sommet pour indiquer la position de la derniere valeur empilee
         *code=0;
     }
 }

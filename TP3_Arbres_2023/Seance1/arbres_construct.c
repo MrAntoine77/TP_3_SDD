@@ -18,17 +18,19 @@
  */
 int lirePref_fromFileName(char *fileName, eltPrefPostFixee_t *tabEltsPref, int *nbEltsPref){
     FILE * fichier;
-    fichier=fopen(fileName,"r");
+    fichier=fopen(fileName,"r"); //Ouvre le fichier en mode lecture ("r")
     int nbRacine;
 
     if(fichier){
-        fscanf(fichier,"%d ",&nbRacine);
-        while(!feof(fichier)){
-            
-            fscanf(fichier,"%c %d ",&tabEltsPref[*nbEltsPref].val,&tabEltsPref[*nbEltsPref].nbFils);
-            (*nbEltsPref)+=1;
+
+        fscanf(fichier,"%d ",&nbRacine); //Lit la valeur de la racine à partir du fichier
+
+        while(!feof(fichier)){ //Continue la boucle jusqu'à la fin du fichier
+
+            fscanf(fichier,"%c %d ",&tabEltsPref[*nbEltsPref].val,&tabEltsPref[*nbEltsPref].nbFils); //Lit les valeurs de la structure eltPrefPostFixee_t à partir du fichier
+            //et les stocke dans le tableau tabEltsPref
+            (*nbEltsPref)+=1; //Incrémente le nombre d'éléments de la representation après chaque lecture
         }
-        
         fclose(fichier);
     }
     return nbRacine;
@@ -42,11 +44,16 @@ int lirePref_fromFileName(char *fileName, eltPrefPostFixee_t *tabEltsPref, int *
  */
 void printTabEltPref(FILE * file, eltPrefPostFixee_t * tabEltPref, int nbEltsPref){
     int i;
-    for (i = 0; i < nbEltsPref; i++)
+
+    for (i = 0; i < nbEltsPref; i++) //On boucle sur le nombre d'éléments
     {
-        if(i!=nbEltsPref-1){
+        //On affiche de la bonne manière les éléments
+        if(i != nbEltsPref-1){
+
             fprintf(file,"(%c,%d) ",tabEltPref[i].val,tabEltPref[i].nbFils);
-        }else{
+        }
+        else{
+
             fprintf(file,"(%c,%d)",tabEltPref[i].val,tabEltPref[i].nbFils);
         }
     }
@@ -62,12 +69,15 @@ void printTabEltPref(FILE * file, eltPrefPostFixee_t * tabEltPref, int nbEltsPre
  
 cell_lvlh_t *allocPoint(char val) {
 
-    cell_lvlh_t *newPoint = (cell_lvlh_t*)malloc(sizeof(cell_lvlh_t));
+    cell_lvlh_t *newPoint = (cell_lvlh_t*)malloc(sizeof(cell_lvlh_t)); //Alloue de la mémoire pour une nouvelle structure cell_lvlh_t
+
     if (newPoint == NULL) {
+
         printf("Erreur : allocation de memoire impossible.\n");
         exit(1);
     }
     
+    // Initialise les champs de la structure avec la valeur spécifiée ou par NULL :
     newPoint->val = val;
     newPoint->lv = NULL;
     newPoint->lh = NULL;
@@ -84,32 +94,35 @@ cell_lvlh_t *allocPoint(char val) {
  *     - l'adresse de la racine de l'arbre sinon
 */
 cell_lvlh_t *pref2lvlh(eltPrefPostFixee_t * tabEltPref, int nbRacines) {
+
     pile_t * pile = initPile(20);
     cell_lvlh_t * tete = NULL;
+    cell_lvlh_t * nouv;
     eltPrefPostFixee_t * cour=tabEltPref;
     cell_lvlh_t ** prec=&tete;
     int nbFof=nbRacines;
-    int i=0;
-    while(nbFof>0 || !estVidePile(pile))
-    {
-        int code;
-        eltPile elem;
-        if(nbFof>0){ 
-            cell_lvlh_t * nouv = allocPoint(cour[i].val);
-            *prec=nouv;
-            elem.nbFils_ou_Freres=nbFof-1;
-            elem.adrPrec=&nouv->lh;
-            empiler(pile, &elem, &code);
-            
-            prec=&nouv->lv;
-            nbFof=cour[i].nbFils;
+    int i=0, code;
+    eltPile elem;
 
+    while(nbFof>0 || !estVidePile(pile)) //Continue la boucle tant que nbFof est supérieur à 0 ou la pile n'est pas vide
+    {
+        if(nbFof>0){ 
+
+            nouv = allocPoint(cour[i].val); //Alloue une nouvelle structure cell_lvlh_t avec la valeur courante de tabEltPref
+            *prec=nouv; //Affecte la nouvelle structure à l'adresse pointée par prec
+            elem.nbFils_ou_Freres=nbFof-1; //Initialise les champs nbFils_ou_Freres et adrPrec de la structure eltPile
+            elem.adrPrec=&nouv->lh; 
+            empiler(pile, &elem, &code); //On empile ces informations
+            prec=&nouv->lv; //Met à jour prec pour pointer vers le champ du fils de la nouvelle structure
+            nbFof=cour[i].nbFils;  //Met à jour nbFof avec le nombre de fils de la valeur courante de tabEltPref
             i++;
-        } else {
+
+        } else {  //Si nbFof est égal à 0 et la pile n'est pas vide
             if (!estVidePile(pile)){
+
                 depiler(pile, &elem,&code);
-                prec=elem.adrPrec;
-                nbFof=elem.nbFils_ou_Freres;
+                prec=elem.adrPrec; //Met à jour prec avec la valeur de adrPrec de la structure défilée
+                nbFof=elem.nbFils_ou_Freres; //Met à jour nbFof avec la valeur de nbFils_ou_Freres de la structure défilée
             }
         }   
     } 
@@ -125,22 +138,26 @@ cell_lvlh_t *pref2lvlh(eltPrefPostFixee_t * tabEltPref, int nbRacines) {
 void libererArbre(cell_lvlh_t ** adrPtRacine)
 {
 
-    cell_lvlh_t * cour = *adrPtRacine;
+    cell_lvlh_t * cour = *adrPtRacine; //Initialise un pointeur cour avec la valeur de la racine
     cell_lvlh_t * prec;
     pile_t * pile = initPile(20);
     eltPile elem;
     int code;
-    while(cour != NULL){
-        elem.adrCell=cour;
-        empiler(pile, &elem, &code);
-        prec=cour;
-        cour=cour->lv;
-        free(prec);
-        while(cour == NULL && !estVidePile(pile)){
+
+    while(cour != NULL){ //Continue la boucle tant que cour n'est pas NULL
+
+        elem.adrCell=cour; //Affecte la valeur de cour au champ adrCell de la structure elem
+        empiler(pile, &elem, &code); //On empile cette information
+        prec=cour; //Affecte la valeur de cour à prec
+        cour=cour->lv; //On avance vers le fils
+        free(prec); //Libère la mémoire allouée pour la structure précédente
+
+        while(cour == NULL && !estVidePile(pile)){ //Continue la boucle tant que cour est NULL et la pile n'est pas vide
+
             depiler(pile, &elem,&code);
-            cour=elem.adrCell;
-            cour=cour->lh;
+            cour=elem.adrCell; //Met à jour cour avec la valeur de adrCell de la structure défilée
+            cour=cour->lh; //On avance vers le fils
         }
     }
-    libererPile(&pile);
+    libererPile(&pile); //Libère la mémoire allouée pour la pile
 }
