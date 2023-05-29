@@ -48,7 +48,18 @@ TEST(rechercher_v) {
 	REQUIRE( NULL != pere );
 	CHECK( 'A' == pere->val );
 
-// autres tests a ajouter
+	// autres tests a ajouter
+	//Nous avons ajouté : 
+
+    // Test avec une valeur présente dans un sous-arbre
+    pere = rechercher_v(racine, 'J');
+    REQUIRE(NULL != pere);
+    CHECK('J' == pere->val);
+
+    // Test avec une arborescence vide
+    cell_lvlh_t *arborescenceVide = NULL;
+    pere = rechercher_v(arborescenceVide, 'A');
+    CHECK(NULL == pere);
 
 	libererArbre(&racine);
 }
@@ -87,6 +98,14 @@ TEST(rechercherPrecFilsTries) {
 	REQUIRE( NULL != *pprec );
 	CHECK( 'T' == (*pprec)->val );
 	libererArbre(&racine);
+
+	// Test avec un père ayant un seul fils
+    cell_lvlh_t *pereUnique = allocPoint('X');
+    pereUnique->lv = allocPoint('Y');
+
+    pprec = rechercherPrecFilsTries(pereUnique, 'Y');
+    REQUIRE(NULL != *pprec);
+    CHECK('Y' == (*pprec)->val);
 }
 
 TEST(insererTrie) {

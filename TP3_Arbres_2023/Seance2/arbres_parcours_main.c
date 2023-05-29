@@ -27,14 +27,14 @@ TEST(nouvCell) {
 }
 
 
-TEST(getNbFils_ou_Freres) {
+TEST(getNbFils_ou_Freres) { //Test pour un arbre "classique"
 	int nbRacines = 0;
 	int nbEltsPref = 0;
 	eltPrefPostFixee_t tabEltPref[NB_ELTPREF_MAX];
 	cell_lvlh_t *racine = NULL;
-	
 	char buffer[1024];
 	FILE * file = fmemopen(buffer, 1024, "w");
+
 	REQUIRE ( NULL != file);
 
 	printf("\033[35m\ngetNbFils_ou_Freres :");
@@ -43,6 +43,7 @@ TEST(getNbFils_ou_Freres) {
 	nbRacines = lirePref_fromFileName("../pref_exTP.txt", tabEltPref, &nbEltsPref);
 	racine = pref2lvlh(tabEltPref, nbRacines);
 
+	//Ces test verifient les nombres de frere ou de fils dans toute notre arborescence
 	REQUIRE( NULL != racine );
 //	printf("A = %c\n", racine->val);
 	CHECK( 2 == getNbFils_ou_Freres(racine) );     // 2 freres y compris lui-meme
@@ -64,7 +65,40 @@ TEST(getNbFils_ou_Freres) {
 	libererArbre(&racine);
 }
 
-TEST(printPostfixee) {
+TEST(getNbFils_ou_Freres_racineSeule) { //Arbre avec une seule racine sans fils ou frere
+    cell_lvlh_t *racine = allocPoint('A');
+
+    printf("\033[35m\ngetNbFils_ou_Freres_racineSeule :");
+    printf("\033[0m\n");
+
+    REQUIRE(NULL != racine);
+
+    CHECK(1 == getNbFils_ou_Freres(racine)); // Le nombre de frères ou de fils est égal à un (racine elle-même)
+
+    libererArbre(&racine);
+}
+
+TEST(getNbFils_ou_Freres_arborescenceAvecFreres) { //Test avec une seule racine avec des frères
+    cell_lvlh_t *racine = allocPoint('A');
+    cell_lvlh_t *frere1 = allocPoint('B');
+    cell_lvlh_t *frere2 = allocPoint('C');
+
+    printf("\033[35m\ngetNbFils_ou_Freres_arborescenceAvecFreres :");
+    printf("\033[0m\n");
+
+    REQUIRE(NULL != racine);
+    REQUIRE(NULL != frere1);
+    REQUIRE(NULL != frere2);
+
+    racine->lh = frere1;
+    frere1->lh = frere2;
+
+    CHECK(3 == getNbFils_ou_Freres(racine)); // Le nombre de frères ou de fils est égal à 3 (racine, frere1, frere2)
+
+    libererArbre(&racine);
+}
+
+TEST(printPostfixee) { //Test avec un fichier existant
 	int nbRacines = 0;
 	int nbEltsPref = 0;
 	eltPrefPostFixee_t tabEltPref[NB_ELTPREF_MAX];
@@ -84,6 +118,30 @@ TEST(printPostfixee) {
 	printPostfixee(file, racine);
 	fclose(file);
 	CHECK( 0 == strcmp(buffer,"(E,0) (J,0) (B,2) (D,0) (G,0) (H,1) (A,3) (K,0) (M,0) (T,0) (F,3) (I,0) (C,2) 2\n") );
+	
+	libererArbre(&racine);
+}
+
+TEST(printPostfixeeFichierVide) { //Test avec un fichier existant
+	int nbRacines = 0;
+	int nbEltsPref = 0;
+	eltPrefPostFixee_t tabEltPref[NB_ELTPREF_MAX];
+	cell_lvlh_t *racine = NULL;
+	
+	char buffer[1024];
+	FILE * file = fmemopen(buffer, 1024, "w");
+	REQUIRE ( NULL != file);
+
+	printf("\033[35m\nprintPostFixeeFichierVide :");
+	printf("\033[0m\n");
+
+	nbRacines = lirePref_fromFileName("", tabEltPref, &nbEltsPref);
+	racine = pref2lvlh(tabEltPref, nbRacines);
+
+	printPostfixee(stdout, racine);
+	printPostfixee(file, racine);
+	fclose(file);
+	CHECK( 0 == strcmp(buffer,"0\n") ); //Fichier vide donc affiche juste une racine = à 0
 	
 	libererArbre(&racine);
 }

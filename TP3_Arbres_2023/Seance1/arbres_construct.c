@@ -19,7 +19,7 @@
 int lirePref_fromFileName(char *fileName, eltPrefPostFixee_t *tabEltsPref, int *nbEltsPref){
     FILE * fichier;
     fichier=fopen(fileName,"r"); //Ouvre le fichier en mode lecture ("r")
-    int nbRacine;
+    int nbRacine = 0;
 
     if(fichier){
 
