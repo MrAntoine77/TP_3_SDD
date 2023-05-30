@@ -53,16 +53,13 @@ cell_lvlh_t * rechercher_v(cell_lvlh_t * racine, char v)
  */
 cell_lvlh_t ** rechercherPrecFilsTries(cell_lvlh_t * adrPere, char w)
 {
-    cell_lvlh_t ** pprec = (cell_lvlh_t**)malloc(sizeof(cell_lvlh_t*)); //Alloue de la mémoire pour un pointeur de pointeur pprec
+    cell_lvlh_t ** pprec;// = (cell_lvlh_t**)malloc(sizeof(cell_lvlh_t*)); //Alloue de la mémoire pour un pointeur de pointeur pprec
 
-    *pprec = adrPere->lv; // Affecte le pointeur lv du père à la valeur du pointeur de pointeur
-    printf("Valeur : %c\n",(*pprec)->val);
-
-    while((*pprec)->lh != NULL && (*pprec)->lh->val < w){ //Continue la boucle tant que la cellule suivante frère n'est pas NULL et la valeur de cette cellule est inférieure à w
-
-        *pprec=(*pprec)->lh; //On passe au frère suivant
+    pprec = &(adrPere->lv); // Affecte le pointeur lv du père à la valeur du pointeur de pointeur
+    while((*pprec) != NULL && (*pprec)->val < w){ //Continue la boucle tant que la cellule suivante frère n'est pas NULL et la valeur de cette cellule est inférieure à w
+        pprec=&((*pprec)->lh); //On passe au frère suivant
     }
-
+   
     return pprec; //Retourne le pointeur de pointeur vers la cellule précédente du fils trié
 }
 
@@ -75,8 +72,6 @@ cell_lvlh_t ** rechercherPrecFilsTries(cell_lvlh_t * adrPere, char w)
  */
 int insererTrie(cell_lvlh_t * racine, char v, char w)
 {
-    printPostfixee(stdout,racine);
-
     int retour = 0;
     cell_lvlh_t * pere = rechercher_v(racine, v); // Recherche le pointeur vers le père correspondant à la valeur v en utilisant la fonction rechercher_v
     cell_lvlh_t ** pprec;
@@ -91,12 +86,11 @@ int insererTrie(cell_lvlh_t * racine, char v, char w)
 
             nouv->val = w;  // Affecte la valeur w à la nouvelle cellule
             nouv->lv = NULL;
-            nouv->lh = (*pprec)->lh; // Initialise le champ lh de la nouvelle cellule avec la cellule suivante frère de la position d'insertion
-            (*pprec)->lh = nouv; //Met à jour le champ lh de la cellule précédente pour pointer vers la nouvelle cellule
+            nouv->lh = (*pprec); // Initialise le champ lh de la nouvelle cellule avec la cellule suivante frère de la position d'insertion
+            (*pprec) = nouv; //Met à jour le champ lh de la cellule précédente pour pointer vers la nouvelle cellule
             retour = 1;
         }
     }
 
-    printPostfixee(stdout,racine);
     return retour;
 }

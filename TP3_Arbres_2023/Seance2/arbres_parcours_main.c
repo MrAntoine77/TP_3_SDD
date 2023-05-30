@@ -45,21 +45,17 @@ TEST(getNbFils_ou_Freres) { //Test pour un arbre "classique"
 
 	//Ces test verifient les nombres de frere ou de fils dans toute notre arborescence
 	REQUIRE( NULL != racine );
-//	printf("A = %c\n", racine->val);
 	CHECK( 2 == getNbFils_ou_Freres(racine) );     // 2 freres y compris lui-meme
 	CHECK( 3 == getNbFils_ou_Freres(racine->lv) ); // 3 fils
 
 	REQUIRE( NULL != racine->lv );
-//	printf("B = %c\n", racine->lv->val);
 	CHECK( 3 == getNbFils_ou_Freres(racine->lv) );     // 3 freres y compris lui-meme
 	CHECK( 2 == getNbFils_ou_Freres(racine->lv->lv) ); // 2 fils
 
 	REQUIRE( NULL != racine->lv->lh );
-//	printf("D = %c\n", racine->lv->lh->val);
 	CHECK( 0 == getNbFils_ou_Freres(racine->lv->lh->lv) ); // 0 fils
 
 	REQUIRE( NULL != racine->lv->lh->lh );
-//	printf("H = %c\n", racine->lv->lh->lh->val);
 	CHECK( 1 == getNbFils_ou_Freres(racine->lv->lh->lh->lv) ); // 1 fils
 
 	libererArbre(&racine);
@@ -96,6 +92,8 @@ TEST(getNbFils_ou_Freres_arborescenceAvecFreres) { //Test avec une seule racine 
     CHECK(3 == getNbFils_ou_Freres(racine)); // Le nombre de frères ou de fils est égal à 3 (racine, frere1, frere2)
 
     libererArbre(&racine);
+	libererArbre(&frere1);
+	libererArbre(&frere2);
 }
 
 TEST(printPostfixee) { //Test avec un fichier existant
@@ -122,7 +120,7 @@ TEST(printPostfixee) { //Test avec un fichier existant
 	libererArbre(&racine);
 }
 
-TEST(printPostfixeeFichierVide) { //Test avec un fichier existant
+TEST(printPostfixeeFichierVide) { //Test avec un fichier inexistant
 	int nbRacines = 0;
 	int nbEltsPref = 0;
 	eltPrefPostFixee_t tabEltPref[NB_ELTPREF_MAX];

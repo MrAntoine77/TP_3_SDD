@@ -148,7 +148,6 @@ TEST(pref2lvlh_fichierVide) { //Cas d'un fichier vide
 	//Ces test verifient les valeurs de notre arborescence qui n'est pas définie
     CHECK(0 == nbRacines);
 	CHECK(NULL == racine);
-
 }
 
 END_TEST_GROUP(ARBRE_CONSTRUCT)
