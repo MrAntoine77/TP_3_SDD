@@ -91,8 +91,6 @@ TEST(rechercherPrecFilsTries) {
 	pprec = rechercherPrecFilsTries(pere, 'S');
 	REQUIRE( NULL != *pprec );
 	CHECK( 'T' == (*pprec)->val );
-	printf("VAL : %c\n",(*pprec)->val);
-
 
 	pprec = rechercherPrecFilsTries(pere, 'Z');
 	CHECK( NULL == *pprec );
@@ -106,7 +104,8 @@ TEST(rechercherPrecFilsTries) {
     REQUIRE(NULL != *pprec);
     CHECK('Y' == (*pprec)->val);
 
-	libererArbre(&pereUnique);
+	free(pereUnique->lv);
+	free(pereUnique);
 }
 
 TEST(insererTrie) {
@@ -148,13 +147,15 @@ TEST(insererTrie) {
 	code = insererTrie(racine, 'W', 'D');		//Ajout à un père inexistant
 	CHECK(code==0);
 
+
+	libererArbre(&racine);
 	racine = NULL;
 	code = insererTrie(racine, 'W', 'D');		//Ajout à un arbre vide + père inexistant
 	CHECK(code==0);
 
 
 
-	libererArbre(&racine);
+	
 }
 
 END_TEST_GROUP(ARBRE_INSERT)

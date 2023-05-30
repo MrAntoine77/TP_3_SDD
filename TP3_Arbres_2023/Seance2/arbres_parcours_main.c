@@ -58,6 +58,7 @@ TEST(getNbFils_ou_Freres) { //Test pour un arbre "classique"
 	REQUIRE( NULL != racine->lv->lh->lh );
 	CHECK( 1 == getNbFils_ou_Freres(racine->lv->lh->lh->lv) ); // 1 fils
 
+	fclose(file);
 	libererArbre(&racine);
 }
 
@@ -71,7 +72,7 @@ TEST(getNbFils_ou_Freres_racineSeule) { //Arbre avec une seule racine sans fils 
 
     CHECK(1 == getNbFils_ou_Freres(racine)); // Le nombre de frères ou de fils est égal à un (racine elle-même)
 
-    libererArbre(&racine);
+    free(racine);
 }
 
 TEST(getNbFils_ou_Freres_arborescenceAvecFreres) { //Test avec une seule racine avec des frères
@@ -91,9 +92,9 @@ TEST(getNbFils_ou_Freres_arborescenceAvecFreres) { //Test avec une seule racine 
 
     CHECK(3 == getNbFils_ou_Freres(racine)); // Le nombre de frères ou de fils est égal à 3 (racine, frere1, frere2)
 
-    libererArbre(&racine);
-	libererArbre(&frere1);
-	libererArbre(&frere2);
+    free(racine);
+	free(frere1);
+	free(frere2);
 }
 
 TEST(printPostfixee) { //Test avec un fichier existant

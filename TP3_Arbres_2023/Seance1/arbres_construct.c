@@ -146,18 +146,23 @@ void libererArbre(cell_lvlh_t ** adrPtRacine)
 
     while(cour != NULL){ //Continue la boucle tant que cour n'est pas NULL
 
-        elem.adrCell=cour; //Affecte la valeur de cour au champ adrCell de la structure elem
+        elem.adrCell=cour->lh; //Affecte la valeur de cour au champ adrCell de la structure elem
         empiler(pile, &elem, &code); //On empile cette information
         prec=cour; //Affecte la valeur de cour à prec
         cour=cour->lv; //On avance vers le fils
-        free(prec); //Libère la mémoire allouée pour la structure précédente
+        
 
         while(cour == NULL && !estVidePile(pile)){ //Continue la boucle tant que cour est NULL et la pile n'est pas vide
-
             depiler(pile, &elem,&code);
-            cour=elem.adrCell; //Met à jour cour avec la valeur de adrCell de la structure défilée
-            cour=cour->lh; //On avance vers le fils
+            cour=elem.adrCell; //Met à jour cour avec la valeur de adrCell de la structure défilée            
         }
+        free(prec);
+
+        
     }
     libererPile(&pile); //Libère la mémoire allouée pour la pile
+
+
+
+    
 }

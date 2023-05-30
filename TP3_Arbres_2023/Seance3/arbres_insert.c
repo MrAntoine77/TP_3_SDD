@@ -10,7 +10,6 @@
 #include "arbres_insert.h"
 #include "../Seance1/arbres_construct.h"
 
-#include "../Seance2/arbres_parcours.h"
 
 
 /**
